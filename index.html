@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[YOUR NAME] — Machine Learning Engineer</title>
+<meta name="description" content="Machine Learning Engineer developing end-to-end healthcare ML systems across tabular, medical imaging, and graph-structured clinical data.">
+
+<!--
+============================================================
+  EDIT CHECKLIST — things to replace before you deploy
+============================================================
+  [ ] YOUR NAME            — appears in <title>, nav, hero, footer, publication author lines
+  [ ] Email                — search: mailto:you@example.com   (2 places: contact + footer)
+  [ ] GitHub URL           — search: GITHUB_URL                (nav, contact, footer, project links)
+  [ ] LinkedIn URL         — search: LINKEDIN_URL
+  [ ] Google Scholar URL   — search: SCHOLAR_URL               (contact + publications button)
+  [ ] CV file              — search: cv.pdf  — drop a cv.pdf in the repo root, or change the href
+  [ ] Project links        — search: PROJECT_LINK              (live apps + repos per project)
+  [ ] Publications x7       — search: PUB_TITLE / PUB_VENUE / PUB_DOI  (fill in real titles/venues/DOIs)
+  [ ] Optional: 'Currently' line in About, and specific degree titles in the About side panel
+  ----------------------------------------------------------
+  Deploy: this is one self-contained file. Push to a repo and enable
+  GitHub Pages (or drag into Netlify / import to Vercel). Zero config.
+============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   CLINICAL GRAPH — LIGHT — design tokens
+   Cool clinical off-white (not cream); deep slate text; teal accent.
+   ============================================================ */
+:root{
+  --paper:      #F3F6FA;   /* cool off-white, page background */
+  --surface:    #FFFFFF;   /* card surface */
+  --surface-2:  #E9EFF6;   /* subtle hover / inset tint */
+
+  --ink:        #0F1E30;   /* primary text, deep slate (~15:1) */
+  --ink-soft:   #3E5167;   /* secondary text (~7.6:1) */
+  --ink-faint:  #586679;   /* captions / mono labels (~5:1) */
+
+  --edge:       #3C6E8F;   /* structural blue — graph + structure */
+  --signal:     #0F7A82;   /* deep teal — primary accent / links (5.1:1) */
+  --signal-deep:#0B5F66;   /* accent hover */
+  --signal-tint:#E2EFF0;   /* teal wash for chips / result strip */
+
+  --line:       rgba(15,30,48,.12);
+  --line-soft:  rgba(15,30,48,.07);
+  --line-strong:rgba(15,30,48,.17);
+
+  --shadow-sm:  0 1px 2px rgba(15,30,48,.04), 0 6px 16px -12px rgba(15,30,48,.18);
+  --shadow-lift:0 18px 40px -26px rgba(15,30,48,.38);
+
+  --ff-display: 'Fraunces', Georgia, serif;
+  --ff-body:    'Inter', system-ui, sans-serif;
+  --ff-mono:    'IBM Plex Mono', ui-monospace, monospace;
+
+  --maxw: 1180px;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+
+  --r: 14px;
+  --r-sm: 10px;
+
+  --t-fast: .22s cubic-bezier(.22,.61,.36,1);
+  --t-med:  .5s cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+
+body{
+  font-family:var(--ff-body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+::selection{background:var(--signal);color:#fff;}
+
+a{color:inherit;text-decoration:none}
+
+:focus-visible{
+  outline:2px solid var(--signal);
+  outline-offset:3px;
+  border-radius:3px;
+}
+
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gutter);}
+
+/* ---- type scale ---- */
+.eyebrow{
+  font-family:var(--ff-mono);
+  font-size:.74rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--signal);
+  display:inline-flex;
+  align-items:center;
+  gap:.6em;
+}
+.eyebrow::before{
+  content:"";
+  width:1.6rem;height:1px;
+  background:var(--signal);
+  opacity:.55;
+}
+
+h2.section-title{
+  font-family:var(--ff-display);
+  font-weight:500;
+  font-size:clamp(1.9rem,4vw,2.9rem);
+  line-height:1.08;
+  letter-spacing:-.015em;
+  color:var(--ink);
+  margin:.9rem 0 1.1rem;
+  max-width:18ch;
+}
+.section-lead{
+  font-size:clamp(1rem,1.6vw,1.12rem);
+  color:var(--ink-soft);
+  max-width:56ch;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+header.nav{
+  position:sticky;top:0;z-index:60;
+  backdrop-filter:blur(10px);
+  background:rgba(243,246,250,.72);
+  border-bottom:1px solid var(--line-soft);
+  transition:background var(--t-fast), border-color var(--t-fast);
+}
+header.nav.scrolled{background:rgba(243,246,250,.93);border-bottom-color:var(--line);}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:68px;
+}
+.brand{
+  font-family:var(--ff-mono);
+  font-size:.92rem;
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.6rem;
+  color:var(--ink);
+}
+.brand .dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--signal);
+  box-shadow:0 0 0 4px rgba(15,122,130,.16);
+  flex:none;
+}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none;}
+.nav-links a{
+  font-size:.9rem;color:var(--ink-soft);
+  position:relative;padding:.2rem 0;
+  transition:color var(--t-fast);
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:-3px;
+  width:100%;height:1px;background:var(--signal);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--t-fast);
+}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a:hover::after{transform:scaleX(1);}
+
+.nav-cta{
+  font-family:var(--ff-mono);font-size:.82rem;
+  border:1px solid var(--line-strong);
+  padding:.5rem .95rem;border-radius:var(--r-sm);
+  color:var(--ink);
+  transition:border-color var(--t-fast),background var(--t-fast),color var(--t-fast);
+}
+.nav-cta:hover{border-color:var(--signal);background:var(--signal);color:#fff;}
+
+.menu-btn{
+  display:none;background:var(--surface);border:1px solid var(--line-strong);
+  border-radius:var(--r-sm);width:42px;height:42px;
+  cursor:pointer;align-items:center;justify-content:center;
+}
+.menu-btn span,.menu-btn span::before,.menu-btn span::after{
+  content:"";display:block;width:18px;height:2px;background:var(--ink);
+  position:relative;transition:transform var(--t-fast),opacity var(--t-fast);
+}
+.menu-btn span::before{position:absolute;top:-6px;}
+.menu-btn span::after{position:absolute;top:6px;}
+.menu-btn[aria-expanded="true"] span{background:transparent;}
+.menu-btn[aria-expanded="true"] span::before{transform:translateY(6px) rotate(45deg);}
+.menu-btn[aria-expanded="true"] span::after{transform:translateY(-6px) rotate(-45deg);}
+
+.mobile-menu{
+  display:none;
+  position:fixed;inset:68px 0 auto 0;z-index:55;
+  background:var(--surface);
+  border-bottom:1px solid var(--line);
+  box-shadow:var(--shadow-lift);
+  padding:1rem var(--gutter) 1.6rem;
+  flex-direction:column;gap:.25rem;
+  transform:translateY(-8px);opacity:0;pointer-events:none;
+  transition:transform var(--t-fast),opacity var(--t-fast);
+}
+.mobile-menu.open{transform:translateY(0);opacity:1;pointer-events:auto;}
+.mobile-menu a{
+  padding:.85rem .25rem;font-size:1.05rem;
+  border-bottom:1px solid var(--line-soft);color:var(--ink-soft);
+}
+.mobile-menu a:last-child{border-bottom:none;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;overflow:hidden;}
+#graph-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:0;display:block;
+}
+.hero-mask{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(102deg, var(--paper) 0%, rgba(243,246,250,.86) 30%, rgba(243,246,250,0) 60%),
+    linear-gradient(180deg, rgba(243,246,250,0) 58%, var(--paper) 100%);
+}
+.hero-inner{
+  position:relative;z-index:2;
+  min-height:min(92vh,820px);
+  display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(5rem,12vh,9rem);
+}
+.hero h1{
+  font-family:var(--ff-display);
+  font-weight:600;
+  font-size:clamp(2.7rem,7vw,5.4rem);
+  line-height:1.02;
+  letter-spacing:-.025em;
+  color:var(--ink);
+  max-width:16ch;
+  margin:1.4rem 0 1.5rem;
+}
+.hero h1 .accent{
+  font-style:italic;font-weight:500;
+  color:var(--signal);
+}
+.hero-sub{
+  font-size:clamp(1.05rem,2vw,1.28rem);
+  color:var(--ink-soft);
+  max-width:50ch;
+  margin-bottom:2.4rem;
+}
+.hero-sub strong{color:var(--ink);font-weight:600;}
+
+.hero-actions{display:flex;flex-wrap:wrap;gap:.9rem;align-items:center;}
+.btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-family:var(--ff-mono);font-size:.9rem;
+  padding:.8rem 1.3rem;border-radius:var(--r-sm);
+  border:1px solid transparent;cursor:pointer;
+  transition:transform var(--t-fast),background var(--t-fast),border-color var(--t-fast),color var(--t-fast),box-shadow var(--t-fast);
+}
+.btn:hover{transform:translateY(-2px);}
+.btn-primary{background:var(--signal);color:#fff;font-weight:500;box-shadow:var(--shadow-sm);}
+.btn-primary:hover{background:var(--signal-deep);}
+.btn-ghost{border-color:var(--line-strong);color:var(--ink);}
+.btn-ghost:hover{border-color:var(--signal);}
+.btn svg{width:15px;height:15px;}
+
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:1.6rem 2.4rem;
+  margin-top:3.2rem;padding-top:1.8rem;
+  border-top:1px solid var(--line);
+  font-family:var(--ff-mono);font-size:.82rem;
+  color:var(--ink-faint);
+}
+.hero-meta .k{color:var(--signal);}
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+section{padding-block:clamp(4.5rem,9vw,7.5rem);position:relative;}
+.section-head{margin-bottom:clamp(2.5rem,5vw,3.5rem);}
+
+/* ---- About ---- */
+.about-grid{
+  display:grid;grid-template-columns:1.15fr .85fr;
+  gap:clamp(2rem,5vw,4.5rem);align-items:start;
+}
+.about-body p{
+  font-size:clamp(1.05rem,1.7vw,1.22rem);
+  color:var(--ink);line-height:1.65;margin-bottom:1.2rem;
+}
+.about-body p:last-child{margin-bottom:0;color:var(--ink-soft);font-size:1.05rem;}
+.about-aside{
+  border-left:1px solid var(--line);
+  padding-left:clamp(1.2rem,2.5vw,2rem);
+}
+.about-aside dl{display:grid;gap:1.4rem;}
+.about-aside dt{
+  font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:.35rem;
+}
+.about-aside dd{font-size:.98rem;color:var(--ink);}
+
+/* ---- Research focus ---- */
+.focus-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.1rem;
+}
+.focus-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:1.7rem 1.6rem 1.8rem;
+  transition:border-color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast);
+}
+.focus-card:hover{border-color:var(--line-strong);transform:translateY(-3px);box-shadow:var(--shadow-lift);}
+.focus-num{
+  font-family:var(--ff-mono);font-size:.78rem;color:var(--signal);
+  display:block;margin-bottom:1.1rem;
+}
+.focus-card h3{
+  font-family:var(--ff-display);font-weight:500;font-size:1.32rem;
+  line-height:1.15;margin-bottom:.6rem;letter-spacing:-.01em;color:var(--ink);
+}
+.focus-card p{font-size:.95rem;color:var(--ink-soft);}
+
+/* ---- Selected work ---- */
+.work-list{display:grid;gap:1.2rem;}
+.project{
+  display:grid;grid-template-columns:auto 1fr;
+  gap:clamp(1.2rem,3vw,2.6rem);
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:clamp(1.6rem,3vw,2.4rem);
+  transition:border-color var(--t-fast),box-shadow var(--t-fast);
+}
+.project:hover{border-color:var(--line-strong);box-shadow:var(--shadow-lift);}
+.project-index{
+  font-family:var(--ff-mono);font-size:.82rem;color:var(--ink-faint);
+  padding-top:.35rem;white-space:nowrap;
+}
+.project-index .yr{display:block;color:var(--signal);margin-top:.3rem;}
+.project h3{
+  font-family:var(--ff-display);font-weight:600;
+  font-size:clamp(1.35rem,2.6vw,1.85rem);
+  line-height:1.12;letter-spacing:-.015em;margin-bottom:.9rem;color:var(--ink);
+}
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.3rem;}
+.tag{
+  font-family:var(--ff-mono);font-size:.72rem;
+  color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:100px;
+  padding:.28rem .7rem;background:var(--paper);
+}
+.par{display:grid;gap:.85rem;margin-bottom:1.4rem;}
+.par-row{display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;align-items:baseline;}
+.par-label{
+  font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint);padding-top:.15rem;
+}
+.par-row p{font-size:1rem;color:var(--ink);line-height:1.55;}
+.par-row.result{
+  background:var(--signal-tint);border-radius:var(--r-sm);
+  padding:.7rem .9rem;margin-top:.1rem;
+  grid-template-columns:7.5rem 1fr;
+}
+.par-row.result .par-label{color:var(--signal);padding-top:.2rem;}
+.metric{
+  color:var(--signal-deep);font-family:var(--ff-mono);font-weight:500;
+  font-size:.96rem;
+}
+.project-links{display:flex;flex-wrap:wrap;gap:1.3rem;align-items:center;}
+.plink{
+  font-family:var(--ff-mono);font-size:.85rem;color:var(--signal);
+  display:inline-flex;align-items:center;gap:.45rem;
+  transition:gap var(--t-fast),color var(--t-fast);
+}
+.plink:hover{gap:.75rem;color:var(--signal-deep);}
+.plink svg{width:14px;height:14px;}
+.plink.muted{color:var(--ink-faint);cursor:default;}
+.plink.muted:hover{gap:.45rem;color:var(--ink-faint);}
+
+/* ---- Publications ---- */
+.pub-head-row{
+  display:flex;flex-wrap:wrap;align-items:flex-end;
+  justify-content:space-between;gap:1.5rem;
+  margin-bottom:clamp(2rem,4vw,3rem);
+}
+.pub-count{
+  font-family:var(--ff-display);font-weight:600;
+  font-size:clamp(3.2rem,8vw,5rem);line-height:.9;
+  color:var(--signal);
+}
+.pub-count small{
+  display:block;font-family:var(--ff-mono);font-weight:400;
+  font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-faint);margin-top:.7rem;
+}
+.pub-list{display:grid;gap:0;border-top:1px solid var(--line);}
+.pub{
+  display:grid;grid-template-columns:auto 1fr auto;
+  gap:1.4rem;align-items:baseline;
+  padding:1.5rem 0;
+  border-bottom:1px solid var(--line);
+  transition:padding-left var(--t-fast);
+}
+.pub:hover{padding-left:.6rem;}
+.pub-n{font-family:var(--ff-mono);font-size:.8rem;color:var(--ink-faint);}
+.pub-main h3{
+  font-family:var(--ff-display);font-weight:500;
+  font-size:1.18rem;line-height:1.25;margin-bottom:.5rem;
+  letter-spacing:-.01em;color:var(--ink);
+}
+.pub-authors{font-size:.92rem;color:var(--ink-faint);}
+.pub-authors .me{color:var(--ink);font-weight:600;}
+.pub-venue{
+  font-family:var(--ff-mono);font-size:.8rem;color:var(--ink-soft);
+  text-align:right;white-space:nowrap;
+}
+.pub-venue a{color:var(--signal);}
+.pub-venue a:hover{text-decoration:underline;}
+.pub-foot{margin-top:2rem;}
+
+/* ---- Toolkit ---- */
+.kit-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1.6rem 2.4rem;
+}
+.kit-group h3{
+  font-family:var(--ff-mono);font-size:.78rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--signal);
+  padding-bottom:.9rem;margin-bottom:1.1rem;
+  border-bottom:1px solid var(--line);
+}
+.kit-group ul{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem;}
+.kit-group li{
+  font-size:.9rem;color:var(--ink);
+  background:var(--surface);border:1px solid var(--line);
+  padding:.4rem .8rem;border-radius:var(--r-sm);
+  transition:border-color var(--t-fast),color var(--t-fast);
+}
+.kit-group li:hover{border-color:var(--edge);color:var(--ink);}
+
+/* ---- Contact ---- */
+.contact{border-top:1px solid var(--line);}
+.contact-grid{
+  display:grid;grid-template-columns:1fr auto;
+  gap:clamp(2rem,5vw,4rem);align-items:center;
+}
+.contact h2{
+  font-family:var(--ff-display);font-weight:500;
+  font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;
+  letter-spacing:-.02em;margin-bottom:1.1rem;max-width:14ch;color:var(--ink);
+}
+.contact h2 .accent{font-style:italic;color:var(--signal);}
+.contact p{color:var(--ink-soft);max-width:46ch;margin-bottom:2rem;}
+.contact-links{display:flex;flex-wrap:wrap;gap:.8rem;}
+.clink{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-family:var(--ff-mono);font-size:.88rem;
+  border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  padding:.7rem 1.1rem;color:var(--ink);background:var(--surface);
+  transition:border-color var(--t-fast),background var(--t-fast),color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast);
+}
+.clink:hover{border-color:var(--signal);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.clink.primary{background:var(--signal);color:#fff;border-color:var(--signal);font-weight:500;}
+.clink.primary:hover{background:var(--signal-deep);border-color:var(--signal-deep);}
+.clink svg{width:15px;height:15px;}
+.contact-aside{
+  font-family:var(--ff-mono);font-size:.82rem;color:var(--ink-faint);
+  text-align:right;line-height:2;
+}
+.contact-aside .k{color:var(--signal);}
+
+/* ---- Footer ---- */
+footer{
+  border-top:1px solid var(--line-soft);
+  padding-block:2.4rem;
+}
+.foot-inner{
+  display:flex;flex-wrap:wrap;gap:1rem;
+  align-items:center;justify-content:space-between;
+  font-family:var(--ff-mono);font-size:.78rem;color:var(--ink-faint);
+}
+.foot-inner a{color:var(--ink-soft);transition:color var(--t-fast);}
+.foot-inner a:hover{color:var(--signal);}
+
+/* ============================================================
+   REVEAL ANIMATION
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity var(--t-med),transform var(--t-med);}
+.reveal.in{opacity:1;transform:none;}
+.hero .reveal{transition-delay:var(--d,0s);}
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1!important;transform:none!important;transition:none!important;}
+  .btn:hover,.clink:hover,.focus-card:hover,.project:hover{transform:none;}
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:880px){
+  .nav-links,.nav-cta{display:none;}
+  .menu-btn{display:flex;}
+  .mobile-menu{display:flex;}
+  .about-grid{grid-template-columns:1fr;}
+  .about-aside{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:1.6rem;}
+  .contact-grid{grid-template-columns:1fr;}
+  .contact-aside{text-align:left;}
+}
+@media (max-width:620px){
+  .project{grid-template-columns:1fr;gap:1.2rem;}
+  .project-index{display:flex;gap:.8rem;padding-top:0;}
+  .project-index .yr{margin-top:0;}
+  .par-row{grid-template-columns:1fr;gap:.25rem;}
+  .par-row.result{grid-template-columns:1fr;}
+  .par-label{padding-top:0;}
+  .pub{grid-template-columns:auto 1fr;}
+  .pub-venue{grid-column:2;text-align:left;white-space:normal;margin-top:.5rem;}
+  .hero-meta{gap:1rem 1.6rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand"><span class="dot" aria-hidden="true"></span>[YOUR NAME]</a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#focus">Research</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="#toolkit">Toolkit</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="nav-cta">Get in touch</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+  <a href="#about">About</a>
+  <a href="#focus">Research</a>
+  <a href="#work">Selected work</a>
+  <a href="#publications">Publications</a>
+  <a href="#toolkit">Toolkit</a>
+  <a href="#contact">Get in touch</a>
+</nav>
+
+<main id="top">
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" aria-label="Introduction">
+  <canvas id="graph-canvas" aria-hidden="true"></canvas>
+  <div class="hero-mask" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow reveal" style="--d:.05s">Machine Learning Engineer · Healthcare AI</span>
+    <h1 class="reveal" style="--d:.12s">Clinical models that <span class="accent">earn trust</span>, not just accuracy.</h1>
+    <p class="hero-sub reveal" style="--d:.2s">I build end-to-end healthcare ML systems across tabular, medical imaging, and graph-structured clinical data — and translate them into <strong>decision-support tools clinicians can actually use</strong>.</p>
+    <div class="hero-actions reveal" style="--d:.28s">
+      <a href="#work" class="btn btn-primary">
+        View selected work
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+    <div class="hero-meta reveal" style="--d:.36s">
+      <span><span class="k">07</span> first-author publications</span>
+      <span><span class="k">06</span> projects</span>
+      <span><span class="k">MSc</span> engineering + health sciences</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ABOUT ============================ -->
+<section id="about" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-body">
+        <div class="section-head" style="margin-bottom:1.6rem">
+          <span class="eyebrow reveal">About</span>
+          <h2 class="section-title reveal" id="about-title">Engineering ML for the realities of clinical data.</h2>
+        </div>
+        <p class="reveal">I'm a Machine Learning Engineer working at the intersection of deep learning and healthcare. My focus is building models that hold up under the constraints clinical data actually imposes — class imbalance, demographic disparity, small labeled cohorts, and the need for predictions a clinician can interpret and defend.</p>
+        <p class="reveal">My work spans machine learning, deep learning, and computer vision — weighted-average ensembles on imbalanced electronic health record data, convolutional and recurrent networks, attention mechanisms, and medical image classification, with fairness-aware modeling running throughout. Across seven first-authored publications, several of these models don't stop at the paper — I've deployed them as interactive Streamlit applications and wrapped them in reproducible CI/CD pipelines, so the work is usable, not just publishable.</p>
+        <p class="reveal">My background spans graduate degrees in engineering and health sciences, which is where the dual instinct comes from: rigorous about the modeling, grounded in the clinical question it's meant to answer.</p>
+      </div>
+      <aside class="about-aside reveal">
+        <dl>
+          <div>
+            <dt>Field</dt>
+            <dd>Healthcare ML across tabular, imaging &amp; graph data</dd>
+          </div>
+          <div>
+            <dt>Focus areas</dt>
+            <dd>Machine learning · Deep learning · Computer vision · Fairness-aware modeling</dd>
+          </div>
+          <div>
+            <dt>Education</dt>
+            <dd>[Degree], Engineering — [University, Year]<br>[Degree], Health Sciences — [University, Year]</dd>
+          </div>
+          <div>
+            <dt>Currently</dt>
+            <dd>[Open to ML / healthcare-AI roles — edit or remove]</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RESEARCH FOCUS ============================ -->
+<section id="focus" aria-labelledby="focus-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow reveal">Focus areas</span>
+      <h2 class="section-title reveal" id="focus-title">Three areas that run through the work.</h2>
+      <p class="section-lead reveal">Distinct disciplines, one throughline: models that are accurate, fair across groups, and interpretable enough to support real clinical decisions.</p>
+    </div>
+    <div class="focus-grid">
+      <article class="focus-card reveal">
+        <span class="focus-num">01</span>
+        <h3>Machine learning</h3>
+        <p>Ensemble methods, fairness-aware modeling, and imbalanced learning — implemented with scikit-learn.</p>
+      </article>
+      <article class="focus-card reveal">
+        <span class="focus-num">02</span>
+        <h3>Deep learning</h3>
+        <p>Convolutional, recurrent, and graph neural networks with attention mechanisms — built in PyTorch and TensorFlow.</p>
+      </article>
+      <article class="focus-card reveal">
+        <span class="focus-num">03</span>
+        <h3>Computer vision</h3>
+        <p>CNNs, Vision Transformers, and YOLO for image classification and detection — in PyTorch and TensorFlow.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SELECTED WORK ============================ -->
+<section id="work" aria-labelledby="work-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow reveal">Selected work</span>
+      <h2 class="section-title reveal" id="work-title">Six projects, problem to deployment.</h2>
+      <p class="section-lead reveal">Each one framed by the problem it tackled, the approach I took, and the measured result. Links go to live apps and code where available.</p>
+    </div>
+
+    <div class="work-list">
+
+      <!-- Project 1 -->
+      <article class="project reveal">
+        <div class="project-index">01<span class="yr">2026</span></div>
+        <div class="project-body">
+          <h3>End-to-End ML CI/CD Pipeline</h3>
+          <div class="tags"><span class="tag">Docker</span><span class="tag">GitHub Actions</span><span class="tag">Docker Hub</span></div>
+          <div class="par">
+            <div class="par-row"><span class="par-label">Problem</span><p>Breast-cancer prediction models needed a path from code to deployment that was reproducible and safe to automate.</p></div>
+            <div class="par-row"><span class="par-label">Approach</span><p>Built a full CI/CD pipeline with Docker and GitHub Actions — container images published to Docker Hub, with quality gates that halt deployment when evaluation metrics fall below defined thresholds.</p></div>
+            <div class="par-row result"><span class="par-label">Result</span><p><span class="metric">Automated, reproducible deployment</span> with metric-gated releases that block regressions before they ship.</p></div>
+          </div>
+          <div class="project-links">
+            <a class="plink" href="PROJECT_LINK_CICD_REPO" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.8 18.3 5.1 18.3 5.1c.7 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5z"/></svg>
+              View code
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="project reveal">
+        <div class="project-index">02<span class="yr">2025</span></div>
+        <div class="project-body">
+          <h3>Graph Neural Network for Coronary Artery Disease Mortality Prediction</h3>
+          <div class="tags"><span class="tag">Graph Neural Networks</span><span class="tag">PyTorch</span><span class="tag">GNNExplainer</span><span class="tag">Streamlit</span></div>
+          <div class="par">
+            <div class="par-row"><span class="par-label">Problem</span><p>Predicting mortality in coronary artery disease where relationships between patients carry signal that flat models miss.</p></div>
+            <div class="par-row"><span class="par-label">Approach</span><p>Deployed a deliberately lightweight graph neural network — fewer than 1,000 parameters — in PyTorch, with GNNExplainer for interpretability and a live Streamlit interface.</p></div>
+            <div class="par-row result"><span class="par-label">Result</span><p><span class="metric">93.0% recall</span>, a +12% gain over the best baseline, from a model small enough to interrogate.</p></div>
+          </div>
+          <div class="project-links">
+            <a class="plink" href="PROJECT_LINK_CAD_APP" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3h7v7M21 3l-9 9M5 7v12h12"/></svg>
+              Live app
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Project 3 -->
+      <article class="project reveal">
+        <div class="project-index">03<span class="yr">2025</span></div>
+        <div class="project-body">
+          <h3>Ensemble Classification for Pharmacogenetic Testing Uptake</h3>
+          <div class="tags"><span class="tag">Ensemble ML</span><span class="tag">scikit-learn</span><span class="tag">EHR</span><span class="tag">Imbalanced Learning</span></div>
+          <div class="par">
+            <div class="par-row"><span class="par-label">Problem</span><p>Predicting pharmacogenetic testing uptake from imbalanced electronic health record data, where single classifiers underperformed.</p></div>
+            <div class="par-row"><span class="par-label">Approach</span><p>Built and validated a weighted-average ensemble pipeline — benchmarking multiple classifiers and combining the top performers on imbalanced EHR data.</p></div>
+            <div class="par-row result"><span class="par-label">Result</span><p><span class="metric">79.6% AUC · 76.5% recall</span>, outperforming every individual baseline.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Project 4 -->
+      <article class="project reveal">
+        <div class="project-index">04<span class="yr">2024</span></div>
+        <div class="project-body">
+          <h3>Large-Scale Retrospective Pharmacoepidemiological Analysis</h3>
+          <div class="tags"><span class="tag">SAS</span><span class="tag">SQL</span><span class="tag">Propensity Score Matching</span><span class="tag">Logistic Regression</span></div>
+          <div class="par">
+            <div class="par-row"><span class="par-label">Problem</span><p>Estimating the effect of psychostimulant use on opioid-use-disorder outcomes across a decade of claims data.</p></div>
+            <div class="par-row"><span class="par-label">Approach</span><p>Engineered a multi-table analytical pipeline in SAS and SQL — joining and transforming claims data to build analytical samples, then applying propensity score matching and logistic regression.</p></div>
+            <div class="par-row result"><span class="par-label">Result</span><p><span class="metric">Decade-scale causal estimates</span> from a reproducible observational-data pipeline.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Project 5 -->
+      <article class="project reveal">
+        <div class="project-index">05<span class="yr">2023</span></div>
+        <div class="project-body">
+          <h3>Fairness-Aware Classification for Opioid Use Disorder Prediction</h3>
+          <div class="tags"><span class="tag">Neural Networks</span><span class="tag">Bias Mitigation</span><span class="tag">Equality of Odds</span></div>
+          <div class="par">
+            <div class="par-row"><span class="par-label">Problem</span><p>Opioid-use-disorder predictions that perform well overall can still carry large disparities across demographic groups.</p></div>
+            <div class="par-row"><span class="par-label">Approach</span><p>Developed an equality-of-odds bias-mitigation algorithm and a fairness-aware weighted majority voting classifier.</p></div>
+            <div class="par-row result"><span class="par-label">Result</span><p><span class="metric">92.7% recall · 90.2% accuracy</span> while measurably reducing demographic disparities.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Project 6 -->
+      <article class="project reveal">
+        <div class="project-index">06<span class="yr">2022</span></div>
+        <div class="project-body">
+          <h3>Psoriasis Detection &amp; Treatment Recommendation</h3>
+          <div class="tags"><span class="tag">CNN</span><span class="tag">TensorFlow</span><span class="tag">ResNetV2 Ensemble</span><span class="tag">Streamlit</span></div>
+          <div class="par">
+            <div class="par-row"><span class="par-label">Problem</span><p>Detecting psoriasis and classifying its subtype from images, then turning that into an actionable treatment recommendation.</p></div>
+            <div class="par-row"><span class="par-label">Approach</span><p>Built and deployed a hierarchical image-classification pipeline using a weighted-average ensemble of ResNetV2 networks, integrated with a multi-criteria decision-analysis module.</p></div>
+            <div class="par-row result"><span class="par-label">Result</span><p><span class="metric">91.9% binary accuracy · 93.3% on 7-class subtyping</span>, with automated treatment recommendations.</p></div>
+          </div>
+          <div class="project-links">
+            <a class="plink" href="PROJECT_LINK_PSORIASIS_REPO" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.8 18.3 5.1 18.3 5.1c.7 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5z"/></svg>
+              View code
+            </a>
+            <a class="plink" href="PROJECT_LINK_PSORIASIS_APP" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3h7v7M21 3l-9 9M5 7v12h12"/></svg>
+              Live app
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PUBLICATIONS ============================ -->
+<section id="publications" aria-labelledby="pub-title">
+  <div class="wrap">
+    <span class="eyebrow reveal">Publications</span>
+    <div class="pub-head-row">
+      <h2 class="section-title reveal" id="pub-title" style="margin-bottom:0">Peer-reviewed, and first-authored.</h2>
+      <div class="pub-count reveal">07<small>First-author papers</small></div>
+    </div>
+
+    <p class="section-lead reveal" style="margin-bottom:2.5rem">Spanning ensemble methods, fairness-aware modeling, medical image classification, and graph neural networks. <em>Fill in titles, venues, and DOIs below — author lines and structure are ready.</em></p>
+
+    <div class="pub-list">
+      <article class="pub reveal">
+        <span class="pub-n">01</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper one]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+      <article class="pub reveal">
+        <span class="pub-n">02</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper two]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+      <article class="pub reveal">
+        <span class="pub-n">03</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper three]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+      <article class="pub reveal">
+        <span class="pub-n">04</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper four]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+      <article class="pub reveal">
+        <span class="pub-n">05</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper five]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+      <article class="pub reveal">
+        <span class="pub-n">06</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper six]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+      <article class="pub reveal">
+        <span class="pub-n">07</span>
+        <div class="pub-main">
+          <h3>[PUB_TITLE — paper seven]</h3>
+          <p class="pub-authors"><span class="me">[Your Name]</span>, [Co-authors]</p>
+        </div>
+        <div class="pub-venue">[PUB_VENUE], [Year]<br><a href="PUB_DOI" target="_blank" rel="noopener">DOI ↗</a></div>
+      </article>
+    </div>
+
+    <div class="pub-foot reveal">
+      <a class="plink" href="SCHOLAR_URL" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12 12 5l7 7M5 12v7h14v-7"/></svg>
+        Full list on Google Scholar
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TOOLKIT ============================ -->
+<section id="toolkit" aria-labelledby="kit-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow reveal">Toolkit</span>
+      <h2 class="section-title reveal" id="kit-title">The stack behind the work.</h2>
+    </div>
+    <div class="kit-grid">
+      <div class="kit-group reveal">
+        <h3>Languages</h3>
+        <ul><li>Python</li><li>R</li><li>SAS</li><li>SQL</li></ul>
+      </div>
+      <div class="kit-group reveal">
+        <h3>Machine Learning</h3>
+        <ul><li>scikit-learn</li><li>Ensemble Methods</li><li>Fairness-Aware Modeling</li><li>Imbalanced Learning</li></ul>
+      </div>
+      <div class="kit-group reveal">
+        <h3>Deep Learning</h3>
+        <ul><li>PyTorch</li><li>TensorFlow</li><li>RNNs</li><li>Attention Mechanisms</li><li>Graph Neural Networks</li></ul>
+      </div>
+      <div class="kit-group reveal">
+        <h3>Computer Vision</h3>
+        <ul><li>CNNs</li><li>Vision Transformers</li><li>YOLO</li><li>Image Classification</li></ul>
+      </div>
+      <div class="kit-group reveal">
+        <h3>Data Processing</h3>
+        <ul><li>Pandas</li><li>NumPy</li><li>Feature Engineering</li><li>Data Visualization</li></ul>
+      </div>
+      <div class="kit-group reveal">
+        <h3>Development &amp; MLOps</h3>
+        <ul><li>Git</li><li>GitHub</li><li>GitHub Actions</li><li>Docker</li><li>CI/CD Pipelines</li><li>Streamlit</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section id="contact" class="contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div>
+        <span class="eyebrow reveal">Contact</span>
+        <h2 class="reveal" id="contact-title">Let's build something <span class="accent">trustworthy</span>.</h2>
+        <p class="reveal">Open to machine learning and healthcare-AI roles, research collaborations, and conversations about applying ML to clinical problems. The fastest way to reach me is email.</p>
+        <div class="contact-links reveal">
+          <a class="clink primary" href="mailto:you@example.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg>
+            you@example.com
+          </a>
+          <a class="clink" href="GITHUB_URL" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.8 18.3 5.1 18.3 5.1c.7 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5z"/></svg>
+            GitHub
+          </a>
+          <a class="clink" href="LINKEDIN_URL" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 1 0 3.5a2.5 2.5 0 0 1 4.98 0zM.5 8.5h4V23h-4zM8.5 8.5h3.8v2h.05c.53-1 1.83-2.05 3.76-2.05 4 0 4.74 2.64 4.74 6.07V23h-4v-6.4c0-1.53-.03-3.5-2.13-3.5-2.14 0-2.47 1.67-2.47 3.39V23h-4z"/></svg>
+            LinkedIn
+          </a>
+          <a class="clink" href="SCHOLAR_URL" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12 12 5l7 7M5 12v7h14v-7"/></svg>
+            Scholar
+          </a>
+          <a class="clink" href="cv.pdf" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            Download CV
+          </a>
+        </div>
+      </div>
+      <div class="contact-aside reveal" aria-hidden="true">
+        <div><span class="k">07</span> publications</div>
+        <div><span class="k">06</span> projects</div>
+        <div><span class="k">03</span> data modalities</div>
+        <div><span class="k">03</span> focus areas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© <span id="year"></span> [YOUR NAME] · Machine Learning Engineer</span>
+    <span>Built from scratch — <a href="GITHUB_URL" target="_blank" rel="noopener">source</a></span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   1. YEAR
+   ============================================================ */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   2. MOBILE MENU
+   ============================================================ */
+(function(){
+  var btn = document.getElementById('menuBtn');
+  var menu = document.getElementById('mobileMenu');
+  function close(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-label','Open menu'); }
+  btn.addEventListener('click', function(){
+    var open = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+  menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', close); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+})();
+
+/* ============================================================
+   3. NAV SHADOW ON SCROLL
+   ============================================================ */
+(function(){
+  var nav = document.getElementById('nav');
+  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 12); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+
+/* ============================================================
+   4. SCROLL REVEAL
+   ============================================================ */
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var items = document.querySelectorAll('.reveal');
+  if(reduce || !('IntersectionObserver' in window)){
+    items.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  document.querySelectorAll('.hero .reveal').forEach(function(el){
+    requestAnimationFrame(function(){ el.classList.add('in'); });
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  items.forEach(function(el){ if(!el.closest('.hero')) io.observe(el); });
+})();
+
+/* ============================================================
+   5. SIGNATURE ELEMENT — ambient neural network
+   An abstract node-and-edge field: data points, connections, and signal
+   pulses. Tuned for a light background. Static render under reduced-motion.
+   ============================================================ */
+(function(){
+  var canvas = document.getElementById('graph-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0;
+  var nodes = [], edges = [], pulses = [];
+  // light-theme colors
+  var EDGE_RGB = '60,110,143';   /* --edge */
+  var NODE_RGB = '60,110,143';
+  var HOT_RGB  = '15,122,130';   /* --signal */
+
+  function size(){
+    var rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+
+  function build(){
+    nodes = []; edges = [];
+    var count = Math.max(26, Math.min(64, Math.round(W * H / 22000)));
+    for(var i=0;i<count;i++){
+      nodes.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        vx: (Math.random()-0.5)*0.12,
+        vy: (Math.random()-0.5)*0.12,
+        r: Math.random()*1.6 + 1.2,
+        hot: Math.random() < 0.18
+      });
+    }
+    rebuildEdges();
+  }
+
+  var LINK_DIST = 150;
+  function rebuildEdges(){
+    edges = [];
+    for(var i=0;i<nodes.length;i++){
+      for(var j=i+1;j<nodes.length;j++){
+        var dx = nodes[i].x-nodes[j].x, dy = nodes[i].y-nodes[j].y;
+        var d = Math.sqrt(dx*dx+dy*dy);
+        if(d < LINK_DIST) edges.push([i,j]);
+      }
+    }
+  }
+
+  function spawnPulse(){
+    if(!edges.length) return;
+    var e = edges[(Math.random()*edges.length)|0];
+    pulses.push({ a:e[0], b:e[1], t:0, speed: 0.006 + Math.random()*0.01 });
+    if(pulses.length > 14) pulses.shift();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // edges
+    for(var k=0;k<edges.length;k++){
+      var a = nodes[edges[k][0]], b = nodes[edges[k][1]];
+      var dx = a.x-b.x, dy = a.y-b.y;
+      var d = Math.sqrt(dx*dx+dy*dy);
+      var alpha = (1 - d/LINK_DIST) * 0.30;
+      ctx.strokeStyle = 'rgba('+EDGE_RGB+','+alpha.toFixed(3)+')';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    }
+    // pulses (attention signal)
+    for(var p=pulses.length-1;p>=0;p--){
+      var pu = pulses[p];
+      var na = nodes[pu.a], nb = nodes[pu.b];
+      pu.t += pu.speed;
+      if(pu.t >= 1){ pulses.splice(p,1); continue; }
+      var px = na.x + (nb.x-na.x)*pu.t;
+      var py = na.y + (nb.y-na.y)*pu.t;
+      var fade = Math.sin(pu.t*Math.PI);
+      ctx.beginPath();
+      ctx.arc(px,py,2.4,0,Math.PI*2);
+      ctx.fillStyle = 'rgba('+HOT_RGB+','+(0.85*fade).toFixed(3)+')';
+      ctx.fill();
+    }
+    // nodes
+    for(var n=0;n<nodes.length;n++){
+      var nd = nodes[n];
+      ctx.beginPath();
+      ctx.arc(nd.x,nd.y,nd.r,0,Math.PI*2);
+      ctx.fillStyle = nd.hot ? 'rgba('+HOT_RGB+',0.85)' : 'rgba('+NODE_RGB+',0.5)';
+      ctx.fill();
+      if(nd.hot){
+        ctx.beginPath();
+        ctx.arc(nd.x,nd.y,nd.r+3.5,0,Math.PI*2);
+        ctx.strokeStyle = 'rgba('+HOT_RGB+',0.22)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+  }
+
+  var rebuildTick = 0;
+  function step(){
+    for(var i=0;i<nodes.length;i++){
+      var nd = nodes[i];
+      nd.x += nd.vx; nd.y += nd.vy;
+      if(nd.x < 0 || nd.x > W) nd.vx *= -1;
+      if(nd.y < 0 || nd.y > H) nd.vy *= -1;
+    }
+    rebuildTick++;
+    if(rebuildTick % 18 === 0) rebuildEdges();
+    if(Math.random() < 0.06) spawnPulse();
+    draw();
+    raf = requestAnimationFrame(step);
+  }
+
+  var raf = null;
+  function start(){
+    size(); build();
+    if(reduce){
+      for(var i=0;i<8;i++) spawnPulse();
+      draw();
+      return;
+    }
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(step);
+  }
+
+  var heroEl = document.querySelector('.hero');
+  if('IntersectionObserver' in window && !reduce){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ if(!raf) raf = requestAnimationFrame(step); }
+        else { cancelAnimationFrame(raf); raf = null; }
+      });
+    }, {threshold:0}).observe(heroEl);
+  }
+
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(start, 200);
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
